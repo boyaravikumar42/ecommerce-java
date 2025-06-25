@@ -1,0 +1,11 @@
+@import "tailwindcss";
+
+div .cards-container{
+    @apply p-[2rem] grid grid-cols-1 gap-3 justify-center align-middle md:grid-cols-2
+    lg:grid-cols-3 xl:grid-cols-4
+    
+}
+div .card-wrapper{
+    @apply w-[22rem] h-[30rem] flex flex-col relative items-center border-2 
+
+}
