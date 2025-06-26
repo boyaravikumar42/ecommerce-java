@@ -6,6 +6,11 @@ div .cards-container{
     
 }
 div .card-wrapper{
-    @apply w-[22rem] h-[30rem] flex flex-col relative items-center border-2 
+    @apply w-[22rem] h-[30rem] flex flex-col relative items-center   hover:shadow-2xl transition-all duration-300 ease-in-out rounded-lg bg-white;
+    background-color: #eef1f5;
+    box-shadow: 0px 0px 0px rgba(242, 191, 235, 0.5);
+    border: 1px solid rgba(242, 191, 235, 0.5);
+    backdrop-filter: blur(10px);
+    border-radius: 0.5rem;
 
 }

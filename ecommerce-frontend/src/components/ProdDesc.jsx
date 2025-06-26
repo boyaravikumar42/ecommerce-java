@@ -23,7 +23,7 @@ function ProdDesc()
         .then((Response)=>{setProduct(Response.data);})
         .catch((error)=>console.log("error occcured get the product ",error))
 
-        axios.get(`http://localhost:8080/prodcuts/img/${id}`, { responseType: "blob" })
+        axios.get(`http://localhost:8080/products/img/${id}`, { responseType: "blob" })
                     .then((response) => {
                         const url = URL.createObjectURL(response.data);
                         setImgurl(url);

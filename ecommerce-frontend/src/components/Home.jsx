@@ -11,7 +11,7 @@ function Home()
             <Link to="/products" className="btn" style={{marginTop:"1.5rem"}}>Explore Now </Link>
         </div>
         <div className="w-[65vw] h-[60vh]">
-            <img src="./hero.png" alt="home" className="w-[100%] h-[100%] z-600 shadow-2xl shadow-fuchsia-700"/>
+            <img src="./hero1.jpg" alt="home" className="w-[100%] h-[100%] z-600 shadow-2xl shadow-fuchsia-700"/>
         </div>
        </section>
     )
