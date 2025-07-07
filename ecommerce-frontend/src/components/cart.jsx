@@ -1,49 +1,48 @@
 import { useState,useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useLog } from "../context/LoginContext";
+import axios from "axios";
 
 function Cart() {
     const [totals,setTotals]=useState({sub:0,tax:0,total:0})
-    const items1=[
-        {
-            name:"ftrkjtrk",
-            desc:"fetkeokeoteotejrhjkhk",
-            quantity:9,
-            price:600,
-            id:1
-        }
-        ,
-        {
-            name:"ftrkjtrk",
-            desc:"fetkeokeoteotejrhjkhk",
-            quantity:8,
-            price:600,
-             id:2
-        }
-        ,
-        {
-            name:"ftrkjtrk",
-            desc:"fetkeokeoteotejrhjkhk",
-            quantity:23,
-            price:600,
-             id:3
-        }  
+    const [items,setItems]=useState([]);
+    const {user}=useLog();
 
-    ]
-    const [items,setItems]=useState(items1);
      useEffect(()=>{
-           const calculate=()=>
-           {
-            var total=0;
-            items.forEach((e)=>
+            const handleCart = async ()=>
             {
-               total+=e.price*e.quantity;
-            })
-            console.log(total);
-            
-            setTotals({...totals,sub:total,tax:total*0.2,total:total+total*0.2})
-           }
-           calculate();   
-        },[items])
+                // const userId =   user.id;
+                // console.log(user);
+                await axios.get(`${import.meta.env.VITE_BACK_END}/cart/items/${user.userId}`,{headers:{Authorization:`Bearer ${localStorage.getItem("token")}`}}   )
+                .then((res)=>
+                {
+                     console.log(res);
+                    if(res.status===204)
+                    {
+                       return;
+                    }
+                    setItems(res.data);
+                    // console.log("Cart items:", res);
+                    // const subTotal = res.data.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+                    // const tax = subTotal * 0.1; // Assuming a tax rate of 10%
+                    // const total = subTotal + tax;
+                    // setTotals({sub:subTotal,tax:tax,total:total});
+                })
+                .catch((error)=>
+                {
+                    console.error("Error fetching cart items:", error);
+                    alert("Error fetching cart items");
+                });
+            };
+            handleCart();
+        },[])
+
+        if(items.length===0)
+        {
+            return (
+                <div className="!pt-[10rem] flex justify-center text-[2rem] font-semibold text-indigo-950">no items in the cart</div>
+            )
+        }
     return (
         <section className="">
             <div>
@@ -54,7 +53,7 @@ function Cart() {
                     {/* <br className="hidden md:block"/> */}
                 </div>
                 <div>
-                    {items.map((e)=><Item key={e.id} name={e.name} desc={e.desc} id={e.id} price={e.price} quantity={e.quantity} />)}
+                    {items.map((e)=><Item key={e.cartId}  desc={e.desc} id={e.id} price={e.price} quantity={e.quantity} />)}
                 </div>
             </div>
              <br />
@@ -71,7 +70,6 @@ function Cart() {
                 </div>
                 <br />
                 <br />
-                <Link to='/products' className="btn">proceed to checkout</Link>
             </div>
         </section>
     )
@@ -79,6 +77,13 @@ function Cart() {
 }
 function Item({name,desc,price,quantity})
 {
+    const [qty,setQuantity]=useState(quantity);
+    const cahangeQuantity =(e)=>
+    {
+        e.preventDefault()
+        console.log(qty);
+        
+    }
     return (
         <div className="flex justify-between items-center">
            
@@ -90,7 +95,12 @@ function Item({name,desc,price,quantity})
                     <p className="text-[1.2rem] text-fuchsia-400">price: ${price}</p>
                 </div>
             </div>
-            <div className="w-10 h-10 border-fuchsia-400 border-2 text-[1.4rem] text-center">{quantity}</div>
+           <div>
+             <form onSubmit={(e)=>cahangeQuantity(e)}>
+                <input className="w-10 h-10 border-fuchsia-400 border-2 text-[1.4rem] text-center" value={qty} onChange={(e)=>{setQuantity(e.target.value)}}></input>
+                <button type="submit" className="bg-fuchsia-400 !py-1 !px-1 text-amber-50 text-md rounded-md" style={{marginLeft:"5px"}}>change</button>
+             </form>
+           </div>
             <div className="text-[1.4rem]">${quantity*price}</div>
             {/* <br /> */}
         </div>

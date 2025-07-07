@@ -14,7 +14,8 @@ import UpdateProduct from './components/UpdateProduct';
 import Login from './components/Login';
 import Register from './components/Register';
 import { LoginContextProvider } from './context/LoginContext';
-import LogOut from './components/LogOut'
+import Profile from './components/Profile'
+import ProductDetail from './components/ProductDetail';
 function App() {
   const [count, setCount] = useState(0)
 
@@ -28,10 +29,11 @@ function App() {
         <Route path="/products" element={<Cards />} />
         <Route path="/cart" element={<Cart />} />
         <Route path='/login' element={<Login/>}/>
-        <Route path='/logout' element={<LogOut/>}/>
+        <Route path='/logout' element={<Profile/>}/>
         <Route path='/register' element={<Register/>}/>
         <Route path="/products/:id" element={<ProdDesc/>}/>
         <Route path="/updateproduct/:id" element={<UpdateProduct/>}/>
+        <Route path="/productdetails/:prodId" element={<ProductDetail/>} />
         <Route path="*" element={<Notfound/>} />
       </Routes>
     </>

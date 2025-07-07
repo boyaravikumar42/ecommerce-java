@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.util.List;
 @Component
 @RestController
+@RequestMapping("/products")
 @CrossOrigin("http://localhost:5173")
 public class ProductController {
     @Autowired
@@ -29,20 +30,23 @@ public class ProductController {
     }
 
 //    getting products
-    @GetMapping("/products")
+
+    @GetMapping("/get")  //http://localhost:8080/products/get
     public List<Product> getProducts() {
+        System.out.println("request arrived");
         return service.getProducts();
     }
 //getting product by id
-    @GetMapping("/products/{prodId}")
+
+    @GetMapping("get/{prodId}")
     public ResponseEntity<Product> getProductById(@PathVariable int prodId) {
         Product product = service.getProductById(prodId);
         if (product.getId() == prodId)
             return new ResponseEntity<>(product, HttpStatus.OK);
-        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 //getting product image by the id
-    @GetMapping("/products/img/{prodId}")
+    @GetMapping("/img/{prodId}")
     public ResponseEntity<byte[]> getImage(@PathVariable int prodId) {
         Product product = service.getProductById(prodId);
         if (product.getId() == prodId)
@@ -50,7 +54,8 @@ public class ProductController {
         return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 //posting the product into the database
-    @PostMapping("/products")
+
+    @PostMapping("/add")
     public ResponseEntity<?> addProduct(@RequestPart Product product, @RequestPart MultipartFile imgFile) throws IOException {
         Product product1 = service.addProduct(product, imgFile);
 
@@ -60,7 +65,7 @@ public class ProductController {
 
     }
 //search the that are matched with teh keyword
-    @GetMapping("products/search/{keyWord}")
+    @GetMapping("/search/{keyWord}")
     public ResponseEntity<List<Product>> getMatchedProducts(@PathVariable String keyWord) {
         List<Product> products = service.getMatchedProducts(keyWord);
         if (products.isEmpty())
@@ -69,7 +74,7 @@ public class ProductController {
             return new ResponseEntity<>(products, HttpStatus.OK);
     }
 //deleting the product by the id
-    @DeleteMapping("/products/delete/{prodId}")
+    @DeleteMapping("/delete/{prodId}")
     public ResponseEntity<String> deleteProduct(@PathVariable int prodId) {
         boolean res = service.deleteProductById(prodId);
         if (!res)

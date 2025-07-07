@@ -13,30 +13,41 @@ function Cards() {
     const handleSearch = (e) => {
         const value = e.target.value;
         setSearch(value);
-        axios.get(`http://localhost:8080/products/search/${value}`)
+    
+        axios.get(`${import.meta.env.VITE_BACK_END}/products/search/${value}`,
+            {headers: {Authorization:`Bearer ${localStorage.getItem("token")}`}})
             .then((res) => {
                 setProducts(res.data);
                 setError(null);
             })
             .catch((err) => {
-                console.error("Error searching products:", err);
+                console.error("Error for searching products:", err);
                 setError("No items found");
             });
     };
 
     // Fetch products initially
     useEffect(() => {
-        axios.get("http://localhost:8080/products")
-            .then((res) => {
-                setProducts(res.data);
-                setError(null);
-            })
-            .catch((err) => {
-                console.error("Error fetching products:", err);
-                setError(" Error: Error to fetching products");
-            })
-            .finally(() => setLoading(false));
-    }, []);
+    const fetchProducts = async () => { 
+        // console.log("Fetching products...111", URL);
+        try {
+            const response = await axios.get(`${import.meta.env.VITE_BACK_END}/products/get`,{headers: {Authorization:`Bearer ${localStorage.getItem("token")}`}});
+            //  console.log("Products fetched:", response);
+            setProducts(response.data);
+            setError(null);
+        } catch (error) {
+            console.error("Error fetching products:", error.message, error);
+           
+            setError("Error to the fetching products");
+        }
+        finally {
+            setLoading(false); 
+        }
+    };
+
+    fetchProducts();
+}, []);
+
 
     // Fetch images for products
     useEffect(() => {
@@ -48,9 +59,12 @@ function Cards() {
                 await Promise.all(
                     products.map(async (product) => {
                         if (!newImages[product.id]) {
-                            const res = await axios.get(`http://localhost:8080/products/img/${product.id}`, {
+                            const res = await axios.get(`${import.meta.env.VITE_BACK_END}/products/img/${product.id}`, {
                                 responseType: "blob",
+                                headers: {Authorization:`Bearer ${localStorage.getItem("token")}`}
+                                
                             });
+                            // console.log("Image fetched for product:", product.id, res);
                             const url = URL.createObjectURL(res.data);
                             newImages[product.id] = url;
                         }
@@ -58,7 +72,7 @@ function Cards() {
                 );
                 setImageUrls(newImages);
             } catch (err) {
-                console.error("Error fetching images:", err);
+                console.error("Error fetching images:", err.message, err);
                 setError("Error: Error to loading product images");
             }
         };
@@ -121,7 +135,7 @@ export default Cards;
 
 function Card({ id, name, img, price, descr, quantity, available }) {
     return (
-        <Link to={`/products/${id}`}>
+        <Link to={`/productdetails/${id}`}>
             <div className="card-wrapper">
                 <img src={img} alt={name} className="w-[100%] h-[60%] object-cover" />
                 <div>
@@ -131,8 +145,8 @@ function Card({ id, name, img, price, descr, quantity, available }) {
                 <p className="text-center text-[1.2rem] mb-2 text-gray-600">{descr}</p>
                 <br />
                 
-                <div className="absolute h-[2rem] right-3 px-4 text-center rounded-full overflow-hidden text-white" style={{ marginTop: "7px" }}>
-                    <i className={`fa-solid ${available ? "fa-check" : "fa-xmark"} text-[1.2rem] ${available ? "bg-green-500" : "bg-red-500"}`}></i>
+                <div className="absolute h-[2rem] right-3 px-4 text-center overflow-hidden " style={{ marginTop: "7px" }}>
+                    <i className={`fa-solid ${available ? "fa-heart" : "fa-sun"} text-[1.2rem] ${available ? "text-green-500" : "text-red-500"}`}></i>
                 </div>
             </div>
         </Link>
