@@ -32,20 +32,29 @@ function AddProduct()
        setImg(e.target.files[0]);
        
     }
-    const handleSubmit =async (e)=>{
-        e.preventDefault();
-        console.log("entry"); 
-        const formData = new FormData();
-        formData.append("imgFile",img)
-        formData.append("product",new Blob([JSON.stringify(product)],{type:"application/json"}));
-        axios.post("http://localhost:8080/products",formData,{headers:{"Content-Type":"multipart/form-data",},})
-        .then((res)=>{alert("product added succesfully...");setProduct({})})
-        .catch((error)=>alert("Error occured to add the product"+error))
-           
+    const handleSubmit =async (e)=>
+        {
+            e.preventDefault();
+            console.log("entry"); 
+            console.log(localStorage.getItem("token"))
+            const formData = new FormData();
+            formData.append("imgFile",img)
+            formData.append("product",
+                new Blob([JSON.stringify(product)],
+                {type:"application/json"}));
+            //fetching the data from the form and appending it to the formData
+            axios.post(`${import.meta.env.VITE_BACK_END}/products/add`,formData,{
+                headers:{
+                    ContentType:"multipart/form-data",
+                    Authorization:`Bearer ${localStorage.getItem("token")}`
+                }})
+            .then((res)=>{alert("product added succesfully...");setProduct({})})
+            .catch((error)=>alert("Error occured to add the product"+error))
+            
     }
     return (
         <section className="add pt-8 bg-gray-100 flex flex-col justify-start items-center h-screen">
-            <form action="" className="flex flex-wrap justify-center gap-4">
+            <form action="" className="flex flex-wrap justify-center gap-4" onSubmit={(e)=>handleSubmit(e)}>
                 <input type="text" name="name" id="name" className="fields" placeholder="product name" onChange={(e)=>{handleInput(e)}}  required/>
                 <input type="text" name="descr" id="descr" className="fields" placeholder="product Description" onChange={(e)=>{handleInput(e)}} required/>
                 <input type="text" name="brand" id="brand" className="fields" placeholder="brand" onChange={(e)=>{handleInput(e)}} required/>
@@ -57,7 +66,7 @@ function AddProduct()
                 <div className="flex justify-center  w-full gap-4"><input type="checkbox"  name="available" id="available" className="border-1 p-2" onChange={(e)=>{handleInput(e)}}/><label className="text-2xl">isAvailable</label></div>
                 <br />
                 <div className="flex justify-center pt-8 gap-4">
-                    <button className="btn text-white px-4 py-2 rounded-lg" onClick={(e)=>handleSubmit(e)}>Add Product</button>
+                    <button type="submit" className="btn text-white px-4 py-2 rounded-lg">Add Product</button>
                     <button className="btn  text-white px-4 py-2 rounded-lg" style={{background:"red"}}>Cancel</button>
                 </div>
                  

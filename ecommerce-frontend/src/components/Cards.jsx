@@ -4,84 +4,100 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 
 function Cards() {
-    const [products, setProducts] = useState([]);            // ✅ local state
-    const [imageUrls, setImageUrls] = useState({});          // { productId: imageUrl }
+    const [products, setProducts] = useState([]);
+    const [imageUrls, setImageUrls] = useState({});
     const [search, setSearch] = useState("");
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const[isSearch,setIsSearch]=useState(true);
 
-    // Handle search
     const handleSearch = (e) => {
         const value = e.target.value;
         setSearch(value);
-        axios.get(`http://localhost:8080/products/search/${value}`)
-            .then((response) => {
-                setProducts(response.data);
+        if(value==="" && isSearch)
+           {
+             setIsSearch(false);
+             return
+           }
+        else
+            setIsSearch(true);
+
+        axios.get(`${import.meta.env.VITE_BACK_END}/products/search/${value}`,
+            {headers: {Authorization:`Bearer ${localStorage.getItem("token")}`}})
+            .then((res) => {
+                setProducts(res.data);
+                setError(null);
             })
-            .catch((error) => {
-                console.error("Error searching products:", error);
-                setError("Error fetching search results");
-                setLoading(false);
+            .catch((err) => {
+                console.error("Error for searching products:", err);
+                setError("No items found");
             });
     };
 
-    // Fetch products on initial load
+    // Fetch products initially
     useEffect(() => {
-        axios.get("http://localhost:8080/products")
-            .then((response) => {
-                setProducts(response.data);
-            })
-            .catch((error) => {
-                console.error("Error fetching products:", error);
-                setError("Error fetching search results");
-                setLoading(false);
-            });
-    }, []);
+    const fetchProducts = async () => { 
+        // console.log("Fetching products...111", URL);
+        try {
+            const response = await axios.get(`${import.meta.env.VITE_BACK_END}/products/get`,{headers: {Authorization:`Bearer ${localStorage.getItem("token")}`}});
+            //  console.log("Products fetched:", response);
+            setProducts(response.data);
+            setError(null);
+        } catch (error) {
+            console.error("Error fetching products:", error.message, error);
+           
+            setError("Error to the fetching products");
+        }
+        finally {
+            setLoading(false); 
+        }
+    };
 
-    // Fetch images for all products
+    fetchProducts();
+}, [isSearch]);
+
+
+    // Fetch images for products
     useEffect(() => {
-        setLoading(true);
-        products.forEach((product) => {
-            if (!imageUrls[product.id]) {
-                axios.get(`http://localhost:8080/products/img/${product.id}`, { responseType: "blob" })
-                    .then((response) => {
-                        const url = URL.createObjectURL(response.data);
-                        console.log(`Image URL for product ${product.id}:`, url);
-                        
-                        setImageUrls( ({ ...imageUrls, [product.id]: url }));
+        if (products.length === 0) return;
+
+        const fetchImages = async () => {
+            const newImages = { ...imageUrls };
+            try {
+                await Promise.all(
+                    products.map(async (product) => {
+                        if (!newImages[product.id]) {
+                            const res = await axios.get(`${import.meta.env.VITE_BACK_END}/products/img/${product.id}`, {
+                                responseType: "blob",
+                                headers: {Authorization:`Bearer ${localStorage.getItem("token")}`}
+                                
+                            });
+                            // console.log("Image fetched for product:", product.id, res);
+                            const url = URL.createObjectURL(res.data);
+                            newImages[product.id] = url;
+                        }
                     })
-                    .catch((error) => {
-                        console.error("Error fetching image:", error);
-                        setError("Error fetching search results");
-                        setLoading(false);
-                    });
+                );
+                setImageUrls(newImages);
+            } catch (err) {
+                console.error("Error fetching images:", err.message, err);
+                setError("Error: Error to loading product images");
             }
-            setLoading(false);
-        });
+        };
+
+        fetchImages();
     }, [products]);
 
-    // Show "No products" if list is empty
-    if(loading) {
-        return (
-            <section>
-                <h1 className="pt-4 m-auto text-center text-[1.5rem]">Loading...</h1>
-            </section>  
-        );
+    if (loading) {
+        return <section><h1 className="pt-4 m-auto text-center text-[1.5rem]">Loading...</h1></section>;
     }
+
     if (error) {
-        return (
-            <section>
-                <h1 className="pt-4 m-auto text-center text-[2rem] text-red-600 font-semibold">Error: {error}</h1>
-            </section>
-        );
+        return <section><h1 className="pt-4 m-auto text-center text-[2rem] text-red-600 font-semibold"> {error}</h1></section>;
     }
 
     if (!products || products.length === 0) {
-        return (
-            <section>
-                <h1 className="pt-4 m-auto text-center">No products are Available...</h1>
-            </section>
-        );
+        return <section><h1 className="pt-4 m-auto text-center">No products are available...</h1></section>;
     }
 
     return (
@@ -99,7 +115,6 @@ function Cards() {
                     }}
                     type="text"
                     name="search"
-                    id="search"
                     placeholder="Search..."
                     value={search}
                     onChange={handleSearch}
@@ -112,9 +127,9 @@ function Cards() {
                         key={product.id}
                         id={product.id}
                         name={product.name}
-                        img={imageUrls[product.id]} // fallback image
+                        img={imageUrls[product.id] || "/placeholder.png"}
                         price={product.price}
-                        descr={product.description}
+                        descr={product.descr}
                         quantity={product.quantity}
                         available={product.available}
                     />
@@ -128,23 +143,18 @@ export default Cards;
 
 function Card({ id, name, img, price, descr, quantity, available }) {
     return (
-        <Link to={`/products/${id}`}>
+        <Link to={`/productdetails/${id}`}>
             <div className="card-wrapper">
-                <img src={img} alt={name} className="w-[100%] h-[60%]" />
+                <img src={img} alt={name} className="w-[100%] h-[60%] object-cover" />
                 <div>
-                    <h2 className="text-[2rem]">{name}</h2>
+                    <h2 className="text-[2rem]">{price} /-</h2>
                 </div>
-                <div className="price text-[1.6rem]">${price}</div>
+                <div className="price text-[1.6rem]">{name}</div>
                 <p className="text-center text-[1.2rem] mb-2 text-gray-600">{descr}</p>
                 <br />
-                <button className="btn w-[80%] py-4 hover:bg-amber-100" disabled={!available}>
-                    {available ? "Buy" : "Out Of Stock"}
-                </button>
-                <div
-                    className="bg-purple-500 absolute h-[2rem] right-3 px-4 text-center rounded-full overflow-hidden text-white"
-                    style={{ marginTop: "7px" }}
-                >
-                    {quantity}
+                
+                <div className="absolute h-[2rem] right-3 px-4 text-center overflow-hidden " style={{ marginTop: "7px" }}>
+                    <i className={`fa-solid ${available ? "fa-heart" : "fa-sun"} text-[1.2rem] ${available ? "text-green-500" : "text-red-500"}`}></i>
                 </div>
             </div>
         </Link>

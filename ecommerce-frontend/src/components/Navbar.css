@@ -1,18 +1,1 @@
-nav{
-    padding: 1% 10%;
-    margin:0;
-    width: 100%;
-    /* border: 2px solid red; */
-}
 
-    nav,nav div {
-    display: flex;
-    justify-content: space-between;
-    align-items:  center;
-   
-}
-nav div a{
-    margin-right: 1rem;
-    font-size: 1.5rem;
-     margin-right:3rem ;
-}

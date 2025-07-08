@@ -19,11 +19,12 @@ function ProdDesc()
             navigate("/login")
             return;
         }
-        axios.get(`http://localhost:8080/products/${id}`)
+        axios.get(`http://localhost:8080/products/${id}`,{ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } })
         .then((Response)=>{setProduct(Response.data);})
         .catch((error)=>console.log("error occcured get the product ",error))
 
-        axios.get(`http://localhost:8080/prodcuts/img/${id}`, { responseType: "blob" })
+        axios.get(`http://localhost:8080/products/img/${id}`, { responseType: "blob",
+            headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }   })
                     .then((response) => {
                         const url = URL.createObjectURL(response.data);
                         setImgurl(url);
