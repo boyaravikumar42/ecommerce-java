@@ -18,44 +18,44 @@ public class AuthController {
     AuthService service;
     @Autowired
     JWTUtil jwtUtil;
+
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody Users user)
-    {
+    public ResponseEntity<?> login(@RequestBody Users user) {
         return service.login(user);
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody Users user)
-    {
+    public ResponseEntity<String> register(@RequestBody Users user) {
         System.out.println(user);
         return service.register(user);
     }
+
     @PostMapping("/sentotp")
-    public String sentOtp(@RequestParam String mail)
-    {
+    public String sentOtp(@RequestParam String mail) {
         return service.sentOtp(mail);
     }
 
     @PostMapping("/verifyotp")
-    public ResponseEntity<String> sentOtp(@RequestParam String mail, @RequestParam String otp)
-    {
-        return service.verifyOtp(mail,otp);
+    public ResponseEntity<String> sentOtp(@RequestParam String mail, @RequestParam String otp) {
+        return service.verifyOtp(mail, otp);
     }
+
     @GetMapping("/user")
-    public ResponseEntity<?> getUser(HttpServletRequest req)
-    {
-        String token = req.getHeader("Authorization") ;
-        String otken =token.substring(7);
-        String mail =jwtUtil.extractUsername(otken);
+    public ResponseEntity<?> getUser(HttpServletRequest req) {
+        String token = req.getHeader("Authorization");
+        String otken = token.substring(7);
+        String mail = jwtUtil.extractUsername(otken);
         return service.getuserByMail(mail);
 
     }
-//    @PutMapping("/change-password")
-//    public ResponseEntity<String> changepassword(@RequestParam String mail)
-//    {
-//
-//        return service.changePassword(mail);
-//    }
+    @PutMapping("/update/{userId}")
+    public ResponseEntity<?> updateuser(@RequestBody Users user,@PathVariable int userId)
+    {
+        return service.updateUser(userId,user);
+
+    }
+
 }
+
 
 

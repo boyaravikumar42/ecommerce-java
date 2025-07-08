@@ -6,7 +6,7 @@ import Cards from './components/Cards';
 import AddProduct from './components/AddProduct';
 import Home from './components/Home';
 import { Router, Routes, Route } from 'react-router-dom';
-import Cart from './components/cart';
+import Cart from './components/Cart';
 import Notfound from './components/Notfound';
 import ProdDesc from './components/ProdDesc';
 import { ProductProvider } from './components/ProductContext';

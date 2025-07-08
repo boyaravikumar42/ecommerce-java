@@ -43,7 +43,9 @@ function ProductDetail() {
         if(error)
           return;
         axios.get(`${import.meta.env.VITE_BACK_END}/products/img/${prodId}`,
-              {headers: {Authorization:`Bearer ${localStorage.getItem("token")}`}}  
+              {
+                responseType: "blob",
+                headers: {Authorization:`Bearer ${localStorage.getItem("token")}`}}  
             ).then((imageRes)=>{
               console.log("Image data fetched:", imageRes);
               
@@ -93,7 +95,7 @@ function ProductDetail() {
     })
       .then((response) => {
         if (response.status === 200) {
-          alert(res.data || "Product added to cart successfully");
+          alert(response.data || "Product added to cart successfully");
         } else {
           alert("Failed to add product to cart");
         }

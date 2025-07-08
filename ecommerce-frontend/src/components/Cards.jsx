@@ -9,11 +9,19 @@ function Cards() {
     const [search, setSearch] = useState("");
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const[isSearch,setIsSearch]=useState(true);
 
     const handleSearch = (e) => {
         const value = e.target.value;
         setSearch(value);
-    
+        if(value==="" && isSearch)
+           {
+             setIsSearch(false);
+             return
+           }
+        else
+            setIsSearch(true);
+
         axios.get(`${import.meta.env.VITE_BACK_END}/products/search/${value}`,
             {headers: {Authorization:`Bearer ${localStorage.getItem("token")}`}})
             .then((res) => {
@@ -46,7 +54,7 @@ function Cards() {
     };
 
     fetchProducts();
-}, []);
+}, [isSearch]);
 
 
     // Fetch images for products

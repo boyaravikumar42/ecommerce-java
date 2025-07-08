@@ -85,6 +85,19 @@ public class AuthService {
         }
     }
 
+    public ResponseEntity<?> updateUser(int userId, Users user)
+    {
+       Optional<Users> user1 =repo.findById(userId);
+       if(user1.isPresent())
+       {
+           user.setUserId(userId);
+           user =repo.save(user);
+           return ResponseEntity.ok(user);
+       }
+       return new ResponseEntity<>("not found",HttpStatus.NOT_FOUND);
+
+    }
+
 //    public ResponseEntity<String> changePassword(String mail) {
 //        Users user = repo.findByEmail(mail);
 //        if(user==null)

@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {useLog} from "../context/LoginContext"
+import axios from "axios";
 
 function Profile() {
   const navigate = useNavigate();
   // Dummy user data; in real-world use context/API
-  const {user,logout}=useLog();
+  const {user,logout,login}=useLog();
   const [tuser, setUser] = useState(user);
 
   const [editMode, setEditMode] = useState(false);
@@ -27,8 +28,26 @@ function Profile() {
 
   const updateProfile = (e) => {
     e.preventDefault();
-    // Simulate profile update
-    setUser(form);
+    
+    axios.put(`${import.meta.env.VITE_BACK_END}/auth/update/${user.userId}`, form, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    }).then((response) => {
+      if (response.status === 200) {
+        setUser(response.data);
+        login(response.data);
+      }
+       else {
+        console.error("Error updating profile:", response);
+
+        alert("Error updating profile");
+      }
+    }).catch((error) => { 
+      console.error("Error updating profile:", error);
+      alert("Error updating profile");
+    });
+
     setEditMode(false);
     alert("Profile updated!");
   };
