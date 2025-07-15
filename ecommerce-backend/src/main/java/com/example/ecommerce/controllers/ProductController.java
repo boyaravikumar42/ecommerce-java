@@ -68,10 +68,7 @@ public class ProductController {
     @GetMapping("/search/{keyWord}")
     public ResponseEntity<List<Product>> getMatchedProducts(@PathVariable String keyWord) {
         List<Product> products = service.getMatchedProducts(keyWord);
-        if (products.isEmpty())
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        else
-            return new ResponseEntity<>(products, HttpStatus.OK);
+        return new ResponseEntity<>(products, HttpStatus.OK);
     }
 //deleting the product by the id
     @DeleteMapping("/delete/{prodId}")

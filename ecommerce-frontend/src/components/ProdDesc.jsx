@@ -19,7 +19,7 @@ function ProdDesc()
             navigate("/login")
             return;
         }
-        axios.get(`http://localhost:8080/products/${id}`,{ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } })
+        axios.get(`import.meta.V/${id}`,{ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } })
         .then((Response)=>{setProduct(Response.data);})
         .catch((error)=>console.log("error occcured get the product ",error))
 

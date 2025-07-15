@@ -23,6 +23,7 @@ public class CartService {
         return ResponseEntity.ok(items);
     }
 
+
     public ResponseEntity<?> addItemToCart(CartItems item) {
         System.out.println(item);
         CartItems item1 = repo.findByUserIdAndProductId(item.getUserId(),item.getProductId());
@@ -60,4 +61,12 @@ public class CartService {
     }
 
 
+    public ResponseEntity<?> getCartItemsBy(int prodId, int userId) {
+        CartItems item1 = repo.findByUserIdAndProductId(userId,prodId);
+        if(item1!=null)
+        {
+            return new ResponseEntity<>(item1,HttpStatus.OK);
+        }
+        return new ResponseEntity<>("item not in cart",HttpStatus.NOT_FOUND);
+    }
 }

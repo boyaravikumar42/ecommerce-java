@@ -57,22 +57,47 @@ function ProductDetail() {
               // alert("Error fetching image data");
             });
           }
+
+          const CartItem =async()=>
+          {
+            axios.get(`${import.meta.env.VITE_BACK_END}/cart/get?prodId=${prodId}&userId=${user.userId}`,
+              {headers: {Authorization:`Bearer ${localStorage.getItem("token")}`}}  
+            ).then((res)=>{
+              console.log("Cart item fetched:", res);
+              if(res.status===200)
+              {
+                setItem(res.data);
+                setQuantity(res.data.quantity);
+              }
+              else
+              {
+                console.log("Cart item not found");
+              }
+            }
+            ).catch((error)=>{
+              console.error("Error fetching cart item:", error);
+              // alert("Error fetching cart item");
+            });
+          }
       
-      if(!user)
+      if(user.name===null)
       {
-        alert("Please login to view product details");
+        // alert("Please login to view product details");
         navigate("/login");
         return;
       }
-       fetchProduct();
+       else{
+        fetchProduct();
       getImg();
+      CartItem();
+       }
     }
   ,[]);
 
 
   const handleDelete = ()=>
         {
-            axios.delete(`http://localhost:8080/products/delete/${prodId}`,
+            axios.delete(`${import.meta.env.VITE_BACK_END}/products/delete/${prodId}`,
               {headers: {Authorization:`Bearer ${localStorage.getItem("token")}`}}
             )
             .then((response)=>{alert(response.data); navigate("/products")})
@@ -114,7 +139,7 @@ function ProductDetail() {
   }
   return (
     <section className="w-full min-h-screen !py-[8rem]" style={{fontSize:"150%"}}>
-      <div className="w-[100%] flex flex-col md:flex-row gap-10 bg-white  !p-6 rounded-lg">
+      <div className="w-[100%]  min-h-[80vh] flex flex-col md:flex-row gap-10 bg-white  !p-6 rounded-lg">
         {/* Left Side: Product Image */}
         <div className="md:w-1/2 flex justify-center items-center">
           <img
@@ -125,7 +150,7 @@ function ProductDetail() {
         </div>
 
         {/* Right Side: Product Info */}
-        <div className="md:w-1/2 space-y-4">
+        <div className="md:w-1/2 space-y-4 flex flex-col justify-center md:gap-5">
           {/* Category */}
           <p className="text-sm md:text-md text-gray-500 uppercase tracking-wider">
             {product.cateogery}
@@ -137,27 +162,45 @@ function ProductDetail() {
           </h1>
 
           {/* Price */}
-          <p className="text-xl text-green-600 font-semibold">₹{product.price}</p>
+          <p className="text-2xl text-green-600 font-semibold">₹{product.price}</p>
 
           {/* Quantity & Add to Cart */}
-          <form className="flex items-center gap-4" onSubmit={e=>handleAddToCart(e)}>
-            <input
-              type="number"
-              min="1"
-              value={quantity}
-              onChange={(e) => setQuantity(parseInt(e.target.value))}
-              className="w-20 border border-gray-300 rounded-md p-2 text-center"
-            />
-            <button
+         {
+           item ? (
+             
+            <Link to="/cart">
+              <button
               className="bg-fuchsia-600 hover:bg-fuchsia-700 text-white !px-5 !py-1 rounded-md font-semibold"
             >
-              Add to Cart
+             go to cart
             </button>
-          </form>
+            <br />
+            </Link>
+            )
+            : (
+              <form className="flex items-center gap-4" onSubmit={e=>handleAddToCart(e)}>
+              <input
+                type="number"
+                min="1"
+                value={quantity}
+                onChange={(e) => setQuantity(parseInt(e.target.value))}
+                className="w-20 border border-gray-300 rounded-md p-2 text-center"
+              />
+              <button
+                className="bg-fuchsia-600 hover:bg-fuchsia-700 text-white !px-5 !py-1 rounded-md font-semibold"
+              >
+                Add to Cart
+              </button> 
+            </form>
+            )
+         }
           <br />
-           {(user&& user.role !=="user") && <Link to={`/updateproduct/${prodId}`}><button className="bg-blue-500 hover:bg-blue-700 text-white !px-5 !py-1 rounded-md font-semibold">Update</button></Link>}
+
+          <div>
+             {(user&& user.role !=="user") && <Link to={`/updateproduct/${prodId}`}><button className="bg-blue-500 hover:bg-blue-700 text-white !px-5 !py-1 rounded-md font-semibold">Update</button></Link>}
           {(user&& user.role ==="admin") && <button className="bg-red-500 hover:bg-red-700 text-white !px-5 !py-1 rounded-md font-semibold" onClick={handleDelete} style={{marginLeft:"1rem"}}>Delete</button>}
           {/* Product Description */}
+          </div>
          
           <div className="mt-6">
             <br />

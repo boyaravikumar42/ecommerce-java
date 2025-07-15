@@ -40,7 +40,11 @@ public class CartController {
     {
         return service.deleteItem(cartId);
     }
-
+    @GetMapping("/get")
+    public ResponseEntity<?> getCartItem(@RequestParam int prodId,@RequestParam int userId)
+    {
+        return service.getCartItemsBy(prodId,userId);
+    }
 
 
 
