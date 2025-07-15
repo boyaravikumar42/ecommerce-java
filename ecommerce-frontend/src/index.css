@@ -39,7 +39,7 @@ section{
 
 .btn
 {
-    @apply inline-block px-5 py-2 text-2xl bg-indigo-950 hover:bg-indigo-500 shadow-indigo-900 text-cyan-50 rounded-full z-40 shadow-2xl ;
+    @apply inline-block !px-5 py-2 text-2xl bg-indigo-950 hover:bg-indigo-900  text-cyan-50 rounded-full z-40 ;
    
 }
 .fields{
@@ -50,7 +50,7 @@ section{
    @apply h-[3rem] !px-[1.5rem] text-[1.4rem]
 }
 .active{
-    @apply  text-indigo-950
+    @apply  text-indigo-950 shadow-fuchsia-800  text-shadow-lg 
 }
 
 

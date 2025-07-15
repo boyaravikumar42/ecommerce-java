@@ -13,13 +13,13 @@ function Login()
     {
         if(user.name)
             navigate('/');
-    },[])
+    },[user])
     
     const handleLogin=()=>
     {
         if(userDetails.email.trim() === '')
         {
-            alert("Please enter your name");
+            alert("Please enter your mail");
             return;
         }
         if(userDetails.password.trim() === '')
@@ -28,7 +28,7 @@ function Login()
             return;
         }
         // Simulate a login process
-        axios.post(`http://localhost:8080/auth/login`, userDetails)
+        axios.post(`${import.meta.env.VITE_BACK_END}/auth/login`, userDetails)
         .then((res) => {
             console.log("Login response:", res);
             if(res.status === 200)
@@ -60,16 +60,18 @@ function Login()
                 <h2 className="text-[2rem] font-semibold ">login to explore more...</h2>
             </div>
             <br />
-            <input type="text" placeholder="Enter your mail" className=" h-[3rem]  border-2 border-fuchsia-500 rounded-lg p-2 w-[90%] text-[1.4rem]" name="email" value={userDetails.email} onChange={(e)=>setUser({...userDetails,email:e.target.value})} />
+            <input type="text" placeholder="Enter your mail" className=" h-[3rem]  border-2 border-fuchsia-500 rounded-lg p-2 w-[90%] text-[1.4rem]" name="email" value={userDetails.email} onChange={(e)=>setUser({...userDetails,email:e.target.value})} required />
             
-            <input type="password" placeholder="Enter your password" className=" h-[3rem] border-2 border-fuchsia-500 rounded-lg p-2 w-[90%] text-[1.4rem]" name="password" value={userDetails.password} onChange={(e)=>setUser({...userDetails,password:e.target.value})} />
+            <input type="password" placeholder="Enter your password" className=" h-[3rem] border-2 border-fuchsia-500 rounded-lg p-2 w-[90%] text-[1.4rem]" name="password" value={userDetails.password} onChange={(e)=>setUser({...userDetails,password:e.target.value})}  required/>
            
             <div className="flex  w-[80%]">
-                <Link to="/register" className="text-blue-600 text-[1.6rem] ">Register ?</Link>
+                <Link to="/forgotpassword" className="text-blue-600 text-[1.4rem] ">forgot password ?</Link>
             </div>
             <br />
             <button className="w-[90%] h-[3rem] bg-fuchsia-500 text-white rounded-lg p-2  text-[1.6rem] mt-4" onClick={handleLogin}>Login</button>
-    
+            <div>
+                <Link to="/register" className=" text-[1.2rem] ">Don't have an account? <span className="text-blue-600">Register</span></Link>
+            </div>
         </div>
     </section> )
 }

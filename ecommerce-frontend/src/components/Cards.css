@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 div .cards-container{
-    @apply p-[2rem] grid grid-cols-1 gap-3 justify-center align-middle md:grid-cols-2
+    @apply p-[2rem] grid grid-cols-1 gap-3 place-items-center sm:grid-cols-2
     lg:grid-cols-3 xl:grid-cols-4
     
 }

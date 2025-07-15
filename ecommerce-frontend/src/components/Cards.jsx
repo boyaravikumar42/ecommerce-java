@@ -22,8 +22,7 @@ function Cards() {
         else
             setIsSearch(true);
 
-        axios.get(`${import.meta.env.VITE_BACK_END}/products/search/${value}`,
-            {headers: {Authorization:`Bearer ${localStorage.getItem("token")}`}})
+        axios.get(`${import.meta.env.VITE_BACK_END}/products/search/${value}`)
             .then((res) => {
                 setProducts(res.data);
                 setError(null);
@@ -39,7 +38,7 @@ function Cards() {
     const fetchProducts = async () => { 
         // console.log("Fetching products...111", URL);
         try {
-            const response = await axios.get(`${import.meta.env.VITE_BACK_END}/products/get`,{headers: {Authorization:`Bearer ${localStorage.getItem("token")}`}});
+            const response = await axios.get(`${import.meta.env.VITE_BACK_END}/products/get`);
             //  console.log("Products fetched:", response);
             setProducts(response.data);
             setError(null);
@@ -69,8 +68,6 @@ function Cards() {
                         if (!newImages[product.id]) {
                             const res = await axios.get(`${import.meta.env.VITE_BACK_END}/products/img/${product.id}`, {
                                 responseType: "blob",
-                                headers: {Authorization:`Bearer ${localStorage.getItem("token")}`}
-                                
                             });
                             // console.log("Image fetched for product:", product.id, res);
                             const url = URL.createObjectURL(res.data);
@@ -96,13 +93,13 @@ function Cards() {
         return <section><h1 className="pt-4 m-auto text-center text-[2rem] text-red-600 font-semibold"> {error}</h1></section>;
     }
 
-    if (!products || products.length === 0) {
-        return <section><h1 className="pt-4 m-auto text-center">No products are available...</h1></section>;
-    }
+    // if (!products || products.length === 0) {
+    //     return ;
+    // }
 
     return (
         <section>
-            <div className="w-full mt-5">
+            <div className="w-full mt-5 relative">
                 <input
                     className="border-0 outline-0"
                     style={{
@@ -115,10 +112,18 @@ function Cards() {
                     }}
                     type="text"
                     name="search"
+                    id="search"
                     placeholder="Search..."
                     value={search}
                     onChange={handleSearch}
                 />
+                { 
+                products.length === 0 && (
+                   
+                   <section><h1 className="pt-4 m-auto text-center text-2xl">No products are available...</h1></section>
+                )
+            }
+            <label htmlFor="search"><i class="fas fa-search text-2xl font-semibold text-fuchsia-400 absolute right-5 top-4 md:text-3xl md:top-6 md:right-8"></i></label>
             </div>
             <br />
             <div className="cards-container">
@@ -149,12 +154,12 @@ function Card({ id, name, img, price, descr, quantity, available }) {
                 <div>
                     <h2 className="text-[2rem]">{price} /-</h2>
                 </div>
-                <div className="price text-[1.6rem]">{name}</div>
-                <p className="text-center text-[1.2rem] mb-2 text-gray-600">{descr}</p>
+                <div className="price text-[1.6rem] !px-2 text-center">{name}</div>
+                <p className="text-center text-[1.2rem] mb-2 text-gray-600 !px-[1rem]">{descr.substring(0,60)}...</p>
                 <br />
                 
-                <div className="absolute h-[2rem] right-3 px-4 text-center overflow-hidden " style={{ marginTop: "7px" }}>
-                    <i className={`fa-solid ${available ? "fa-heart" : "fa-sun"} text-[1.2rem] ${available ? "text-green-500" : "text-red-500"}`}></i>
+                <div className="absolute h-[2rem] right-0 top-0  text-center overflow-hidden " style={{ marginTop: "7px" }}>
+                    <p className={`text-md ${available?"bg-green-200":"bg-red-400 text-white"} rounded-sm !px-1 !py-1 `}>{ available?"available":"out of stock"}</p>
                 </div>
             </div>
         </Link>

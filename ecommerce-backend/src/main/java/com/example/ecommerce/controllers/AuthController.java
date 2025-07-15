@@ -29,22 +29,26 @@ public class AuthController {
         System.out.println(user);
         return service.register(user);
     }
-
+    //sending otp
     @PostMapping("/sentotp")
-    public String sentOtp(@RequestParam String mail) {
-        return service.sentOtp(mail);
+    public ResponseEntity<String> sentOtp(@RequestParam String mail) {
+         service.sentOtp(mail);
+         return ResponseEntity.ok("otp sent if mail exist");
     }
-
     @PostMapping("/verifyotp")
     public ResponseEntity<String> sentOtp(@RequestParam String mail, @RequestParam String otp) {
         return service.verifyOtp(mail, otp);
+    }
+    @PutMapping("/resetpassword")
+    public ResponseEntity<String> sentOtp(@RequestBody Users user, @RequestParam String otp) {
+        return service.resetPassword(user, otp);
     }
 
     @GetMapping("/user")
     public ResponseEntity<?> getUser(HttpServletRequest req) {
         String token = req.getHeader("Authorization");
-        String otken = token.substring(7);
-        String mail = jwtUtil.extractUsername(otken);
+        token = token.substring(7);
+        String mail = jwtUtil.extractUsername(token);
         return service.getuserByMail(mail);
 
     }
@@ -53,6 +57,17 @@ public class AuthController {
     {
         return service.updateUser(userId,user);
 
+    }
+    @PostMapping("/getpassword/{userId}")
+    public ResponseEntity<Boolean> getPassword(@RequestBody Users user,@PathVariable int userId)
+    {
+        return service.getPassword(user.getPassword(),userId);
+    }
+
+    @PutMapping("/update-password/{userId}")
+    public ResponseEntity<?> changePassword(@PathVariable int userId,@RequestBody Users user )
+    {
+        return service.changePassword(userId,user);
     }
 
 }

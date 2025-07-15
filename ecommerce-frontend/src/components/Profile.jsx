@@ -5,9 +5,8 @@ import axios from "axios";
 
 function Profile() {
   const navigate = useNavigate();
-  // Dummy user data; in real-world use context/API
   const {user,logout,login}=useLog();
-  const [tuser, setUser] = useState(user);
+  
 
   const [editMode, setEditMode] = useState(false);
   const [passwordMode, setPasswordMode] = useState(false);
@@ -28,15 +27,21 @@ function Profile() {
 
   const updateProfile = (e) => {
     e.preventDefault();
-    
-    axios.put(`${import.meta.env.VITE_BACK_END}/auth/update/${user.userId}`, form, {
+    if (!form.name || !form.addr || !form.phone) {
+      alert("Please fill in all fields!");
+      return;
+    }
+
+
+    axios.put(`${import.meta.env.VITE_BACK_END}/auth/update/${user.userId}`, {...form,password:""}, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
     }).then((response) => {
       if (response.status === 200) {
-        setUser(response.data);
         login(response.data);
+        console.log("Profile updated successfully:", response.data);
+        setForm(response.data);
       }
        else {
         console.error("Error updating profile:", response);
@@ -52,22 +57,66 @@ function Profile() {
     alert("Profile updated!");
   };
 
-  const changePassword = (e) => {
-    e.preventDefault();
-    if (passwords.new !== passwords.confirm) {
-      alert("New passwords do not match!");
+  const changePassword = async (e) => {
+  e.preventDefault();
+
+  if (passwords.new !== passwords.confirm) {
+    alert("New passwords do not match!");
+    return;
+  }
+
+  if (passwords.current === passwords.new) {
+    alert("New password cannot be the same as the current password!");
+    return;
+  }
+
+  try {
+    const verifyRes = await axios.post(
+      `${import.meta.env.VITE_BACK_END}/auth/getpassword/${user.userId}`,
+      { password: passwords.current },
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    );
+
+    if (!verifyRes.data) {
+      alert("Current password is incorrect!");
       return;
     }
-    // Simulate password change
-    alert("Password changed!");
-    setPasswords({ current: "", new: "", confirm: "" });
-    setPasswordMode(false);
-  };
+
+    const updateRes = await axios.put(
+      `${import.meta.env.VITE_BACK_END}/auth/update-password/${user.userId}`,
+      { ...form, password: passwords.new },
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    );
+
+    if (updateRes.status === 200) {
+      login(updateRes.data);
+      alert("Password changed successfully!");
+      setPasswords({ current: "", new: "", confirm: "" });
+      setPasswordMode(false);
+    } else {
+      alert("Error changing password.");
+      console.error("Change password error:", updateRes);
+    }
+  } catch (err) {
+    console.error("Error during password change:", err);
+    alert("Error during password change.");
+  }
+};
+
 
   const logoutUser = () => {
     localStorage.removeItem("token"); 
     alert("Logged out!");
     logout();
+
     navigate("/login");
   };
 
@@ -78,7 +127,7 @@ function Profile() {
 
         {!editMode ? (
           <div className="space-y-2 text-[150%]">
-            <p><strong>First Name:</strong> {user.name}</p>
+            <p><strong>Full Name:</strong> {user.name}</p>
             <p><strong>Address :</strong> {user.addr}</p>
             <p><strong>Phone:</strong> {user.phone}</p>
             <p><strong>Role:</strong> {user.role}</p>
@@ -170,7 +219,7 @@ function Profile() {
               value={passwords.current}
               onChange={handlePasswordChange}
               className="border !p-2 rounded-md w-full"
-              required
+              // required
             />
             <input
               type="password"
