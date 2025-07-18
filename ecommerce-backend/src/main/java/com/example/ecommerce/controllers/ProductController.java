@@ -15,7 +15,6 @@ import java.util.List;
 @Component
 @RestController
 @RequestMapping("/products")
-@CrossOrigin("http://localhost:5173")
 public class ProductController {
     @Autowired
     ProductService service;
@@ -37,6 +36,18 @@ public class ProductController {
         return service.getProducts();
     }
 //getting product by id
+@GetMapping("/price")
+public ResponseEntity<List<Product>> getProductsByPriceRange(
+        @RequestParam double min,
+        @RequestParam double max) {
+    return service.findByPriceBetween(min, max);
+}
+    @GetMapping("/category")
+    public ResponseEntity<List<Product>> getProductsByCategory(@RequestParam String value) {
+        return service.findByCategoryIgnoreCase(value);
+    }
+
+
 
     @GetMapping("get/{prodId}")
     public ResponseEntity<Product> getProductById(@PathVariable int prodId) {

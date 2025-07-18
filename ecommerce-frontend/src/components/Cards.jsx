@@ -33,6 +33,8 @@ function Cards() {
             });
     };
 
+    
+
     // Fetch products initially
     useEffect(() => {
     const fetchProducts = async () => { 
@@ -85,6 +87,34 @@ function Cards() {
         fetchImages();
     }, [products]);
 
+   const filterByPriceRange = async (e) => {
+  const [min, max] = e.target.value.split("-").map(Number);
+  if (!min || !max) return;
+
+  try {
+    const res = await axios.get(`${import.meta.env.VITE_BACK_END}/products/price?min=${min}&max=${max}`);
+    setProducts(res.data);
+    setError(null);
+  } catch (err) {
+    console.error("Error filtering by price:", err);
+    setError("No items found in this price range");
+  }
+};
+
+const filterByCategory = async (e) => {
+  const value = e.target.value;
+  if (!value) return;
+
+  try {
+    const res = await axios.get(`${import.meta.env.VITE_BACK_END}/products/category?value=${value}`);
+    setProducts(res.data);
+    setError(null);
+  } catch (err) {
+    console.error("Error filtering by category:", err);
+    setError("No items found in this category");
+  }
+};
+
     if (loading) {
         return <section><h1 className="pt-4 m-auto text-center text-[1.5rem]">Loading...</h1></section>;
     }
@@ -113,7 +143,7 @@ function Cards() {
                     type="text"
                     name="search"
                     id="search"
-                    placeholder="Search..."
+                    placeholder="Search products by name, cateogery and description... "
                     value={search}
                     onChange={handleSearch}
                 />
@@ -123,7 +153,41 @@ function Cards() {
                    <section><h1 className="pt-4 m-auto text-center text-2xl">No products are available...</h1></section>
                 )
             }
-            <label htmlFor="search"><i class="fas fa-search text-2xl font-semibold text-fuchsia-400 absolute right-5 top-4 md:text-3xl md:top-6 md:right-8"></i></label>
+                <label htmlFor="search"><i className="fas fa-search text-2xl font-semibold text-fuchsia-400 absolute right-5 top-4 md:text-3xl md:top-6 md:right-8"></i></label>
+
+                <div className="flex justify-end gap-4 !mt-8 text-[1.2rem]">
+                    <br />
+                    <select
+  name="price"
+  id="pricefilter"
+  className="text-white bg-fuchsia-400 rounded-lg outline-0"
+  onChange={filterByPriceRange}
+>
+  <option value="">Filter by price</option>
+  <option value="0-500">0 - 500</option>
+  <option value="500-1000">500 - 1000</option>
+  <option value="1000-5000">1000 - 5000</option>
+  <option value="5000-10000">5000 - 10000</option>
+  <option value="10000-50000">10000 - 50000</option>
+  <option value="50000-1000000">above 50000</option>
+</select>
+
+<select
+  name="category"
+  id="cateogeryfilter"
+  className="text-white bg-fuchsia-400 rounded-lg outline-0 !p-2"
+  onChange={filterByCategory}
+>
+  <option value="">Filter by category</option>
+  <option value="phones">phones</option>
+  <option value="shoes">shoes</option>
+  <option value="watches">watches</option>
+  <option value="laptops">laptops</option>
+  <option value="electronics">electronics</option>
+  <option value="others">others</option>
+</select>
+
+                </div>
             </div>
             <br />
             <div className="cards-container">
@@ -159,7 +223,7 @@ function Card({ id, name, img, price, descr, quantity, available }) {
                 <br />
                 
                 <div className="absolute h-[2rem] right-0 top-0  text-center overflow-hidden " style={{ marginTop: "7px" }}>
-                    <p className={`text-md ${available?"bg-green-200":"bg-red-400 text-white"} rounded-sm !px-1 !py-1 `}>{ available?"available":"out of stock"}</p>
+                    <p className={`text-md ${available?"bg-green-200":"bg-red-300 text-white"} rounded-sm !px-1 !py-1 `}>{ available?"available":"out of stock"}</p>
                 </div>
             </div>
         </Link>

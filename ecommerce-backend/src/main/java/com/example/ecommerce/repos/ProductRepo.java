@@ -16,5 +16,9 @@ public interface ProductRepo extends JpaRepository<Product, Integer> {
             "LOWER(p.descr) LIKE LOWER(CONCAT('%', :keyWord, '%')) OR " +
             "LOWER(p.category) LIKE LOWER(CONCAT('%', :keyWord, '%'))")
     List<Product> search(@Param("keyWord") String keyWord);
+
+    List<Product> findByPriceBetween(double minPrice, double maxPrice);
+
+    List<Product> findByCategoryIgnoreCase(String category);
 }
 
