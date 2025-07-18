@@ -16,6 +16,7 @@ function AddProduct()
     const navigate = useNavigate();
     const {user}=useLog();
     const [img,setImg] =useState(null);
+    const [loading,setLoading] =useState(false);
 
     useEffect(()=>
     {
@@ -41,7 +42,7 @@ function AddProduct()
         }
         
         setProduct({...product ,[name] : val})
-        console.log(product);
+        // console.log(product);
         
     }
     const handleImg =(e)=>{
@@ -51,6 +52,7 @@ function AddProduct()
     }
     const handleSubmit =async (e)=>
         {
+            setLoading(true);
             e.preventDefault();
             console.log("entry"); 
             console.log(localStorage.getItem("token"))
@@ -65,24 +67,34 @@ function AddProduct()
                     ContentType:"multipart/form-data",
                     Authorization:`Bearer ${localStorage.getItem("token")}`
                 }})
-            .then((res)=>{alert("product added succesfully...");
-                setProduct({name:"",
+            .then((res)=>{
+                setLoading(false);
+                alert("product added succesfully...");
+                })
+            .catch((error)=>{alert("Error occured to add the product"+error);
+                setLoading(false);
+            })
+            setProduct({name:"",
                             descr:"",
                             price:-1,
                             cateogery:"",
                             releaseDate:"",
                             available:false,
                             quantity:""})
-                })
-            .catch((error)=>alert("Error occured to add the product"+error))
-            
+    }
+    if(loading)
+    {
+        <section className="flex justify-center items-center h-screen">
+                <h1 className="text-2xl font-semibold text-fuchsia-600 h-[20rem] text-center">Loading... </h1>    
+        </section>
+
     }
     
     if( user.name===null || user.role=="user")
     {
         return (
             <section className="flex justify-center items-center h-screen">
-                <h1 className="text-3xl font-semibold text-fuchsia-600 h-[20rem]">User role
+                <h1 className="text-3xl font-semibold text-fuchsia-600 h-[20rem] text-center">User role
     do not have permission to access this page.  </h1>    
             </section>
         )

@@ -2,6 +2,7 @@ import { useEffect, useState,} from "react";
 import {useParams,Link,useNavigate} from 'react-router-dom';
 import axios from "axios";
 import {useLog} from './../context/LoginContext';
+import { section } from "framer-motion/client";
 function ProductDetail() {
 
   const [product,setProduct]=useState({});
@@ -13,9 +14,11 @@ function ProductDetail() {
   const prodId =params.prodId;
   const {user}=useLog();
   const navigate = useNavigate();
+  const [loading,setLoading]=useState(false);
 
   useEffect(
      ()=>{
+      setLoading(true);
       const fetchProduct =async()=>
       {
         axios.get(`${import.meta.env.VITE_BACK_END}/products/get/${prodId}`,
@@ -36,6 +39,7 @@ function ProductDetail() {
           console.error("Error to fetching product data:", error);
           setError("Error fetching product data");
           // alert("Error fetching product data");
+          setLoading(false);
         })
       }
 
@@ -55,6 +59,7 @@ function ProductDetail() {
             } ).catch((error)=>{
               console.error("Error fetching image data:", error);
               // alert("Error fetching image data");
+              setLoading(false);
             });
           }
 
@@ -77,6 +82,7 @@ function ProductDetail() {
             ).catch((error)=>{
               console.error("Error fetching cart item:", error);
               // alert("Error fetching cart item");
+              setLoading(false);
             });
           }
       
@@ -91,6 +97,7 @@ function ProductDetail() {
       getImg();
       CartItem();
        }
+       setLoading(false);
     }
   ,[]);
 
@@ -132,6 +139,14 @@ function ProductDetail() {
       }); 
 
   };
+
+
+  if(loading)
+  {
+    <section className="!mt-32">
+      Loading...
+    </section>
+  }
 
 
   if (error) {

@@ -2,6 +2,7 @@ package com.example.ecommerce.services;
 
 import com.example.ecommerce.models.Product;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import com.example.ecommerce.repos.ProductRepo;
 import org.springframework.web.multipart.MultipartFile;
@@ -68,5 +69,17 @@ public class ProductService {
         }
         return null;
 
+    }
+
+    public ResponseEntity<List<Product>> findByPriceBetween(double minPrice, double maxPrice) {
+        List<Product> list =repo.findByPriceBetween(minPrice,maxPrice);
+
+        return ResponseEntity.ok(list);
+    }
+
+    public ResponseEntity<List<Product>> findByCategoryIgnoreCase(String category) {
+        List<Product> list =repo.findByCategoryIgnoreCase(category);
+
+        return ResponseEntity.ok(list);
     }
 }
