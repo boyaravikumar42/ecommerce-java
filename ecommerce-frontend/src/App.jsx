@@ -6,21 +6,18 @@ import Home from './components/Home';
 import { Router, Routes, Route } from 'react-router-dom';
 import Cart from './components/cart';
 import Notfound from './components/Notfound';
-import ProdDesc from './components/ProdDesc';
 import UpdateProduct from './components/UpdateProduct';
 import Login from './components/Login';
 import Register from './components/Register';
 import { LoginContextProvider } from './context/LoginContext';
 import Profile from './components/Profile'
 import ProductDetail from './components/ProductDetail';
-import { CartTotalProvider } from './context/CartTotalContext';
 import ForgotPassword from './components/ForgotPassword';
 function App() {
   const [count, setCount] = useState(0)
 
   return (
      <LoginContextProvider>
-    <CartTotalProvider>
    
       <>
       <Navbar/>
@@ -33,13 +30,11 @@ function App() {
         <Route path='/logout' element={<Profile/>}/>
         <Route path='/forgotpassword' element={<ForgotPassword/>}/>
         <Route path='/register' element={<Register/>}/>
-        <Route path="/products/:id" element={<ProdDesc/>}/>
         <Route path="/updateproduct/:id" element={<UpdateProduct/>}/>
         <Route path="/productdetails/:prodId" element={<ProductDetail/>} />
         <Route path="*" element={<Notfound/>} />
       </Routes>
     </>
-      </CartTotalProvider>
     </LoginContextProvider>
   
     
