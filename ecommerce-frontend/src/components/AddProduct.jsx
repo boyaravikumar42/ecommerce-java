@@ -9,6 +9,7 @@ function AddProduct()
     descr:"",
     price:-1,
     cateogery:"",
+     brand:"",
     releaseDate:"",
     available:false,
     quantity:""})
@@ -68,7 +69,15 @@ function AddProduct()
                     Authorization:`Bearer ${localStorage.getItem("token")}`
                 }})
             .then((res)=>{
-                setLoading(false);
+                setProduct({name:"",
+                            descr:"",
+                            price:-1,
+                            cateogery:"",
+                             brand:"",
+                            releaseDate:"",
+                            available:false,
+                            quantity:""});
+                            
                 alert("product added succesfully...");
                 })
             .catch((error)=>{alert("Error occured to add the product"+error);
@@ -76,11 +85,13 @@ function AddProduct()
             })
             setProduct({name:"",
                             descr:"",
-                            price:-1,
+                            price:0,
                             cateogery:"",
+                            brand:"",
                             releaseDate:"",
                             available:false,
                             quantity:""})
+            setLoading(false);
     }
     if(loading)
     {
@@ -102,15 +113,15 @@ function AddProduct()
     return (
         <section className="add pt-8 bg-gray-100 flex flex-col justify-start items-center h-screen">
             <form action=""  className="flex flex-wrap justify-center gap-4" onSubmit={(e)=>handleSubmit(e)}>
-                <input type="text" name="name" id="name" className="fields" placeholder="product name" onChange={(e)=>{handleInput(e)}}  required/>
-                <input type="text" name="descr" id="descr" className="fields" placeholder="product Description" onChange={(e)=>{handleInput(e)}} required/>
-                <input type="text" name="brand" id="brand" className="fields" placeholder="brand" onChange={(e)=>{handleInput(e)}} required/>
-                <input type="number" name="price" id="price" className="fields" placeholder="Price"onChange={(e)=>{handleInput(e)}} required/>
-                <input type="text" name="cateogery" id="cateogory"className="fields" placeholder="cateogery" onChange={(e)=>{handleInput(e)}} required/>
-                <input type="date" name="releaseDate" id="rdate" className="fields" placeholder="release date" onChange={(e)=>{handleInput(e)}} required/>
-                <input type="number" name="quantity" id="quantity" className="fields" placeholder="Quantity" onChange={(e)=>{handleInput(e)}} required/>
-                <input type="file" name="img" id="img" className="fields" onChange={(e)=>{handleImg(e)}}/>
-                <div className="flex justify-center  w-full gap-4"><input type="checkbox"  name="available" id="available" className="border-1 p-2" onChange={(e)=>{handleInput(e)}}/><label className="text-2xl">isAvailable</label></div>
+                <input value={product.name} type="text" name="name" id="name" className="fields" placeholder="product name" onChange={(e)=>{handleInput(e)}}  required/>
+                <input value={product.descr} type="text" name="descr" id="descr" className="fields" placeholder="product Description" onChange={(e)=>{handleInput(e)}} required/>
+                <input value={product.brand} type="text" name="brand" id="brand" className="fields" placeholder="brand" onChange={(e)=>{handleInput(e)}} required/>
+                <input value={product.price} type="number" name="price" id="price" className="fields" placeholder="Price"onChange={(e)=>{handleInput(e)}} required/>
+                <input  value={product.cateogery} type="text" name="cateogery" id="cateogory"className="fields" placeholder="cateogery" onChange={(e)=>{handleInput(e)}} required/>
+                <input  value={product.releaseDate} type="date" name="releaseDate" id="rdate" className="fields" placeholder="release date" onChange={(e)=>{handleInput(e)}} required/>
+                <input  value={product.quantity} type="number" name="quantity" id="quantity" className="fields" placeholder="Quantity" onChange={(e)=>{handleInput(e)}} required/>
+                <input type="file"  name="img" id="img" className="fields" onChange={(e)=>{handleImg(e)}}/>
+                <div className="flex justify-center  w-full gap-4"><input checked={product.available} type="checkbox"  name="available" id="available" className="border-1 p-2" onChange={(e)=>{handleInput(e)}}/><label className="text-2xl">isAvailable</label></div>
                 <br />
                 <div className="flex justify-center pt-8 gap-4">
                     <button type="submit" className=" text-white text-2xl !px-4 !py-2 rounded-md bg-fuchsia-500 hover:bg-fuchsia-700">Add Product</button>

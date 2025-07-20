@@ -10,9 +10,9 @@ function Home()
 
  </p>
             
-            <Link to="/products" className="btn shadow-sm shadow-fuchsia-600" style={{marginTop:"1.5rem"}}>Explore Now  <i className="fa-solid fa-arrow-right"></i> </Link>
+            <Link to="/products" className="btn  shadow-2xl shadow-fuchsia-300" style={{marginTop:"1.5rem"}}>Explore Now  <i className="fa-solid fa-arrow-right"></i> </Link>
         </div>
-        <div className="w-[70vw] h-[60vh]">
+        <div className="md:w-[70vw] w-[90vw] h-[60vh]">
             <img src="./home.jpg" alt="home" className="w-[100%] h-[100%] "/>
         </div>
        </section>

@@ -6,6 +6,7 @@ import axios from "axios";
 function Login()
 {
     const [userDetails,setUser]=useState({email:"",password:""});
+    const [loading,setLoading]=useState(false);
     const {user,login} = useLog();
     const navigate =useNavigate();
 
@@ -27,6 +28,7 @@ function Login()
             alert("Please enter your password");
             return;
         }
+        setLoading(true);
         // Simulate a login process
         axios.post(`${import.meta.env.VITE_BACK_END}/auth/login`, userDetails)
         .then((res) => {
@@ -39,15 +41,18 @@ function Login()
                 localStorage.setItem("token", token);
                 login(res.data); // Update context with user email
                 navigate("/products");
+                
             }
             else if(res.status === 203)
             {
                 alert("User does not exist. Please register.");
             }
+            setLoading(false);
         })
         .catch((err) => {
             console.error("Login error:", err);
             alert("invalid credentials");
+            setLoading(false);
         });
     }
     return ( 
@@ -68,7 +73,7 @@ function Login()
                 <Link to="/forgotpassword" className="text-blue-600 text-[1.4rem] ">forgot password ?</Link>
             </div>
             <br />
-            <button className="w-[90%] h-[3rem] bg-fuchsia-500 text-white rounded-lg p-2  text-[1.6rem] mt-4" onClick={handleLogin}>Login</button>
+            <button className="w-[90%] h-[3rem] bg-fuchsia-500 text-white rounded-lg p-2  text-[1.6rem] mt-4" disabled={loading} onClick={handleLogin}>{`${!loading ? "login":"Processing..."}`}</button>
             <div>
                 <Link to="/register" className=" text-[1.2rem] ">Don't have an account? <span className="text-blue-600">Register</span></Link>
             </div>
