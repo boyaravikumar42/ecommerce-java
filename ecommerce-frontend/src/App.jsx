@@ -18,7 +18,6 @@ function App() {
 
   return (
      <LoginContextProvider>
-   
       <>
       <Navbar/>
       <Routes>
