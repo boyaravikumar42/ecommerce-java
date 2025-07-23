@@ -252,7 +252,7 @@ function Register() {
           >
             {loading ? "Registering..." : "Register"}
           </button>
-          <Link to="/login" className="text-2xl text-blue-500"> do you have an account login ?</Link>
+          <Link to="/login" className="text-2xl"> do you have an account? <span className=" text-blue-500"> login</span> </Link>
         </form>
       )}
   

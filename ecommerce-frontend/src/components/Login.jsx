@@ -37,7 +37,7 @@ function Login()
             {
                 // Assuming the response contains a token
                 const token = res.data.password;
-                console.log("Token received:", token);
+                // console.log("Token received:", token);
                 localStorage.setItem("token", token);
                 login(res.data); // Update context with user email
                 navigate("/products");
@@ -59,7 +59,7 @@ function Login()
     <section className="flex flex-col justify-center items-center h-screen" style={{padding:"5% 0"}}>
         <h2 className="text-[3.2rem] font-bold text-center text-indigo-950">login page</h2>
         <br />
-        <div className="login-wrapper flex flex-col justify-center items-center gap-4 h-[50vh] md:h-[60vh] w-[90%] md:w-[400px] m-auto rounded-lg shadow-xs hover:shadow-md shadow-fuchsia-400 border-1 border-fuchsia-500 ">
+        <div className="login-wrapper flex flex-col justify-center items-center gap-4 h-[450px] md:h-[60vh] w-[90%] md:w-[400px] m-auto rounded-lg shadow-xs hover:shadow-md shadow-fuchsia-400 border-1 border-fuchsia-500 ">
             <div className="flex  justify-center items-center gap-2">
                 <img src="./logo.png" alt="login" className="w-[8rem] h-[5rem]" />
                 <h2 className="text-[2rem] font-semibold ">login to explore more...</h2>
@@ -75,7 +75,7 @@ function Login()
             <br />
             <button className="w-[90%] h-[3rem] bg-fuchsia-500 text-white rounded-lg p-2  text-[1.6rem] mt-4" disabled={loading} onClick={handleLogin}>{`${!loading ? "login":"Processing..."}`}</button>
             <div>
-                <Link to="/register" className=" text-[1.2rem] ">Don't have an account? <span className="text-blue-600">Register</span></Link>
+                <Link to="/register" className=" text-[1.3rem] ">Don't have an account? <span className="text-blue-600">Register</span></Link>
             </div>
         </div>
     </section> )
