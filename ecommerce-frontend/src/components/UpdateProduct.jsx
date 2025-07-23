@@ -104,7 +104,7 @@ function UpdateProduct()
                     img ? <img src={URL.createObjectURL(img)} alt="Product" className="w-32 h-32 object-cover mt-2" /> : <p className="text-gray-500">No image selected</p>
                     }
                 </div>
-                <div className="flex justify-center  w-full gap-4"><input type="checkbox"  checked={available} name="available" id="available" className="border-1 p-2" onChange={(e)=>{handleInput(e)}}/><label className="text-2xl">isAvailable</label></div>
+                <div className="flex justify-center  w-full gap-4"><input type="checkbox"  checked={product.available} name="available" id="available" className="border-1 p-2" onChange={(e)=>{handleInput(e)}}/><label className="text-2xl">isAvailable</label></div>
                 <br />
                 <div className="flex justify-center pt-8 gap-4">
                     <button type="submit" className=" text-white text-2xl !px-4 !py-2 rounded-md bg-fuchsia-500 hover:bg-fuchsia-700">Update</button>
