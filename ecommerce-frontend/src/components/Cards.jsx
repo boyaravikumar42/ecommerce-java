@@ -22,7 +22,7 @@ function Cards() {
         else
             setIsSearch(true);
 
-        axios.get(`${import.meta.env.VITE_BACK_END}products/search/${value}`)
+        axios.get(`${import.meta.env.VITE_BACK_END}/products/search/${value}`)
             .then((res) => {
                 setProducts(res.data);
                 setError(null);
@@ -40,7 +40,7 @@ function Cards() {
     const fetchProducts = async () => { 
         // console.log("Fetching products...111", URL);
         try {
-            const response = await axios.get(`${import.meta.env.VITE_BACK_END}products/get`);
+            const response = await axios.get(`${import.meta.env.VITE_BACK_END}/products/get`);
             //  console.log("Products fetched:", response);
             setProducts(response.data);
             setError(null);
@@ -68,7 +68,7 @@ function Cards() {
                 await Promise.all(
                     products.map(async (product) => {
                         if (!newImages[product.id]) {
-                            const res = await axios.get(`${import.meta.env.VITE_BACK_END}products/img/${product.id}`, {
+                            const res = await axios.get(`${import.meta.env.VITE_BACK_END}/products/img/${product.id}`, {
                                 responseType: "blob",
                             });
                             // console.log("Image fetched for product:", product.id, res);
@@ -92,7 +92,7 @@ function Cards() {
   if (!min || !max) return;
 
   try {
-    const res = await axios.get(`${import.meta.env.VITE_BACK_END}products/price?min=${min}&max=${max}`);
+    const res = await axios.get(`${import.meta.env.VITE_BACK_END}/products/price?min=${min}&max=${max}`);
     setProducts(res.data);
     setError(null);
   } catch (err) {
@@ -106,7 +106,7 @@ const filterByCategory = async (e) => {
   if (!value) return;
 
   try {
-    const res = await axios.get(`${import.meta.env.VITE_BACK_END}products/category?value=${value}`);
+    const res = await axios.get(`${import.meta.env.VITE_BACK_END}/products/category?value=${value}`);
     setProducts(res.data);
     setError(null);
   } catch (err) {

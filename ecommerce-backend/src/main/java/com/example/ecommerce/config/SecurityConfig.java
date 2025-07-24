@@ -30,7 +30,7 @@ public class SecurityConfig {
         return http.csrf((csrf) -> csrf.disable())
         .cors(cors -> cors
                 .configurationSource(corsConfigurationSource()))
-                .authorizeHttpRequests(customizer -> customizer.requestMatchers("products/**","auth/sentotp","auth/verifyotp","auth/login", "auth/register","auth/resetpassword").permitAll().anyRequest().authenticated())
+                .authorizeHttpRequests(customizer -> customizer.requestMatchers("/products/**","/auth/sentotp","/auth/verifyotp","/auth/login", "/auth/register","/auth/resetpassword").permitAll().anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)
                 .build();
