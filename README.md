@@ -44,9 +44,13 @@ Byte Bazaar is a full-stack eCommerce platform built with **React** and **Spring
 
 ecommerce-java/
 ├── ecommerce-frontend/ # React frontend
+
 └── ecommerce-backend/ # Spring Boot backend
+
     ├── pom.xml
+
     ├── src/
+    
     └── Dockerfile
 
     

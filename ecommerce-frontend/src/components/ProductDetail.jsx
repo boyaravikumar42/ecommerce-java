@@ -92,6 +92,7 @@ function ProductDetail() {
         navigate("/login");
         return;
       }
+      else  if (!user?.verified) return navigate("/register");
        else{
         fetchProduct();
       getImg();

@@ -11,6 +11,7 @@ function Register() {
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
+  const [message,setMessage]= useState("complete your registration...")
   const [form, setForm] = useState({
     name: "",
     phone: "",
@@ -20,6 +21,7 @@ function Register() {
     confirmPassword: "",
     addr: ""
   });
+
 
   // Handle timer for resend button
   useEffect(() => {
@@ -37,6 +39,7 @@ function Register() {
     if (user.name !== null && user.verified === false) {
       setForm(prev => ({ ...prev, email: user.email }));
       setVerifyPhase(true);
+      setMessage("verify your mail and complete registration go furthure...")
     } else if (user.name !== null) {
       navigate("/products");
     }
@@ -131,6 +134,7 @@ function Register() {
           className="bg-white !p-8 rounded-xl shadow-md w-full max-w-3xl space-y-6 flex flex-col gap-4"
           onSubmit={handleVerify}
         >
+          <p className="text-[2rem] font-semibold text-center">{message}</p>
           <input
             type="email"
             name="email"
@@ -156,7 +160,7 @@ function Register() {
             type="button"
             onClick={handleResendOtp}
             disabled={resendTimer > 0}
-            className={`w-[50%] !px-2 !py-2 text-xl text-white font-semibold shadow-xs shadow-gray-700 rounded-md ${
+            className={`w-[30%] !px-2 !py-2 text-xl text-white font-semibold shadow-xs shadow-gray-700 rounded-md ${
               resendTimer > 0 ? "bg-gray-300 cursor-not-allowed" : "bg-gray-400 hover:bg-gray-500"
             }`}
           >
